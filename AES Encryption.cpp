@@ -1,6 +1,5 @@
 #include<bits/stdc++.h>
 using namespace std;
-long int p, q, n, t, flag, e[100], d[100], temp[100], j, m[100], en[100], i;
 string encrypt,decrypt;
 unsigned char num[10]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36,};
 unsigned char mcolumns[4][4]={
@@ -62,122 +61,6 @@ unsigned char req[256]={0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x
 0xe0, 0xe1, 0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea, 0xeb, 0xec, 0xed, 0xee, 0xef, 
 0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff, 
 };
-int prime(long int pr)
-{
-    int i;
-    j = sqrt(pr);
-    for (i = 2; i <= j; i++)
-    {
-        if (pr % i == 0)
-            return 0;
-    }
-    return 1;
-}
-long int cd(long int x)
-{
-    long int k = 1;
-    while (1)
-    {
-        k = k + t;
-        if (k % x == 0)
-            return (k / x);
-    }
-}
-void ce()
-{
-    int k;
-    k = 0;
-    for (i = 2; i < t; i++)
-    {
-        if (t % i == 0)
-            continue;
-        flag = prime(i);
-        if (flag == 1 && i != p && i != q)
-        {
-            e[k] = i;
-            flag = cd(e[k]);
-            if (flag > 0)
-            {
-                d[k] = flag;
-                k++;
-            }
-            if (k == 99)
-                break;
-        }
-    }
-}
-void encryptRSA()
-{
-    long int pt, ct, key = e[0], k, len;
-    i = 0;
-    len = 16;
-    while (i != len)
-    {
-        pt = m[i];
-        pt = pt - 96;
-        k = 1;
-        for (j = 0; j < key; j++)
-        {
-            k = k * pt;
-            k = k % n;
-        }
-        temp[i] = k;
-        ct = k + 96;
-        en[i] = ct;
-        i++;
-    }
-    en[i] = -1;
-    for (i = 0; en[i] != -1; i++)
-        encrypt+=en[i];
-}
-void decryptRSA(unsigned char mat[][4])
-{
-    long int pt, ct, key = d[0], k;
-    i = 0;
-    while (en[i] != -1)
-    {
-        ct = temp[i];
-        k = 1;
-        for (j = 0; j < key; j++)
-        {
-            k = k * ct;
-            k = k % n;
-        }
-        pt = k + 96;
-        m[i] = pt;
-        i++;
-    }
-    m[i] = -1;
-    for (i = 0; m[i] != -1; i++){
-        mat[i%4][i/4]=req[m[i]];
-    }
-}
-void pre(unsigned char w[][4])
-{
-    cout << "\nENTER FIRST PRIME NUMBER\n";
-    cin >> p;
-    flag = prime(p);
-    if (flag == 0)
-    {
-        cout << "\nWRONG INPUT\n";
-        exit(1);
-    }
-    cout << "\nENTER ANOTHER PRIME NUMBER\n";
-    cin >> q;
-    flag = prime(q);
-    if (flag == 0 || p == q)
-    {
-        cout << "\nWRONG INPUT\n";
-        exit(1);
-    }
-    for(int i=0;i<4;i++){
-        for(int j=0;j<4;j++)
-            m[i*4+j]=w[j][i];
-    }
-    n = p * q;
-    t = (p - 1) * (q - 1);
-    ce();
-}
 void create(unsigned char w[][4],string s){
     for(int i=0;i<16;i++)
         w[i%4][i/4]=req[int(s[i])];
@@ -309,6 +192,12 @@ void encryptAES(unsigned char w[][4],unsigned char mat[][4]){
         expand(w,num[k]);
         xorier(mat,w);
     }
+    vector<int> converter;
+    for(int i=0;i<4;i++)
+        for(int j=0;j<4;j++)
+            converter.push_back(mat[j][i]);
+    for(auto p:converter)
+        encrypt+=p;
 }
 void decryptAES(unsigned char w[][4],unsigned char mat[][4]){
     for(int k=9;k>=0;k--){
@@ -343,7 +232,7 @@ int main(){
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
             copy[i][j]=w[i][j];
-    cout<<"ENTER PLAINTEXT\n";
+    cout<<"\nENTER PLAINTEXT\n";
     getline(cin,s);
     len=s.length();
     while(len%16){
@@ -358,16 +247,11 @@ int main(){
         unsigned char mat[4][4];
         create(mat,temp);
         encryptAES(w,mat);
-        // xorier(mat,copy);
-        // pre(mat);
-        // encryptRSA();
-        // decryptRSA(mat);
-        // xorier(mat,copy);
         decryptAES(w,mat);
     }
-    cout<<"ENCRYPTED STRING IS \n";
+    cout<<"\nENCRYPTED STRING IS \n";
     cout<<encrypt<<endl;
-    cout<<"DECRYPTED STRING IS\n";
+    cout<<"\nDECRYPTED STRING IS\n";
     cout<<decrypt<<endl;
     return 0;
 }

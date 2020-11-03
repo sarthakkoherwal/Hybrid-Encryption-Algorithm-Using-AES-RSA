@@ -154,22 +154,6 @@ void decryptRSA(unsigned char mat[][4])
 }
 void pre(unsigned char w[][4])
 {
-    cout << "\nENTER FIRST PRIME NUMBER\n";
-    cin >> p;
-    flag = prime(p);
-    if (flag == 0)
-    {
-        cout << "\nWRONG INPUT\n";
-        exit(1);
-    }
-    cout << "\nENTER ANOTHER PRIME NUMBER\n";
-    cin >> q;
-    flag = prime(q);
-    if (flag == 0 || p == q)
-    {
-        cout << "\nWRONG INPUT\n";
-        exit(1);
-    }
     for(int i=0;i<4;i++){
         for(int j=0;j<4;j++)
             m[i*4+j]=w[j][i];
@@ -331,7 +315,7 @@ int main(){
     encrypt=decrypt="";
     unsigned char w[4][4],copy[4][4];
     string s;
-    cout<<"ENTER AES SECRET KEY\n";
+    cout<<"\nENTER AES SECRET KEY\n";
     getline(cin,s);
     int len=s.size();
     while(len<16)
@@ -343,9 +327,25 @@ int main(){
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
             copy[i][j]=w[i][j];
-    cout<<"ENTER PLAINTEXT\n";
+    cout<<"\nENTER PLAINTEXT\n";
     getline(cin,s);
     len=s.length();
+    cout << "\nENTER FIRST PRIME NUMBER\n";
+    cin >> p;
+    flag = prime(p);
+    if (flag == 0)
+    {
+        cout << "\nWRONG INPUT\n";
+        exit(1);
+    }
+    cout << "\nENTER ANOTHER PRIME NUMBER\n";
+    cin >> q;
+    flag = prime(q);
+    if (flag == 0 || p == q)
+    {
+        cout << "\nWRONG INPUT\n";
+        exit(1);
+    }
     while(len%16){
         s+=' ';
         len++;
@@ -365,9 +365,9 @@ int main(){
         xorier(mat,copy);
         decryptAES(w,mat);
     }
-    cout<<"ENCRYPTED STRING IS \n";
+    cout<<"\nENCRYPTED STRING IS \n";
     cout<<encrypt<<endl;
-    cout<<"DECRYPTED STRING IS\n";
+    cout<<"\nDECRYPTED STRING IS\n";
     cout<<decrypt<<endl;
     return 0;
 }
